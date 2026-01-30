@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
 import { CreditCard, Lock, CheckCircle, ArrowLeft } from 'lucide-react';
-import './Checkout.css';
 
 const Checkout = ({
   selectedProducts,
@@ -93,12 +92,12 @@ const Checkout = ({
   if (paymentComplete) {
     return (
       <motion.div
-        className="payment-success"
+        className="max-w-2xl mx-auto text-center space-y-8 py-12"
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
       >
         <motion.div
-          className="success-icon"
+          className="text-green-500 mx-auto"
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ delay: 0.3 }}
@@ -106,31 +105,36 @@ const Checkout = ({
           <CheckCircle size={80} />
         </motion.div>
 
-        <h2>Payment Successful!</h2>
-        <p>Thank you for your purchase. Your color-matched products will be shipped soon.</p>
+        <div className="space-y-2">
+          <h2 className="text-3xl font-bold text-gray-900">Payment Successful!</h2>
+          <p className="text-lg text-gray-600">Thank you for your purchase. Your color-matched products will be shipped soon.</p>
+        </div>
 
-        <div className="order-summary">
-          <h3>Order Details</h3>
-          <div className="purchased-items">
+        <div className="bg-white rounded-lg shadow-lg p-6 text-left">
+          <h3 className="text-xl font-semibold text-gray-800 mb-4">Order Details</h3>
+          <div className="space-y-3 mb-4">
             {selectedProducts.map(product => (
-              <div key={product.id} className="purchased-item">
-                <span>{product.name}</span>
-                <span>${product.price}</span>
+              <div key={product.id} className="flex justify-between items-center py-2 border-b border-gray-100">
+                <span className="text-gray-700">{product.name}</span>
+                <span className="font-semibold text-gray-900">${product.price}</span>
               </div>
             ))}
           </div>
-          <div className="final-total">
-            <strong>Total: ${getTotalPrice().toFixed(2)}</strong>
+          <div className="border-t pt-4">
+            <div className="flex justify-between items-center">
+              <span className="text-xl font-bold text-gray-900">Total:</span>
+              <span className="text-xl font-bold text-green-600">${getTotalPrice().toFixed(2)}</span>
+            </div>
           </div>
         </div>
 
-        <div className="color-reference-final">
-          <h4>Your Colors</h4>
-          <div className="final-colors">
+        <div className="bg-white rounded-lg shadow-lg p-6">
+          <h4 className="text-lg font-semibold text-gray-800 mb-4">Your Colors</h4>
+          <div className="flex justify-center gap-3">
             {selectedColors.map((color, index) => (
               <div
                 key={index}
-                className="final-color"
+                className="w-16 h-16 rounded-lg shadow-md border border-gray-200"
                 style={{ backgroundColor: color }}
                 title={color}
               />
@@ -143,22 +147,22 @@ const Checkout = ({
 
   return (
     <motion.div
-      className="checkout"
+      className="max-w-6xl mx-auto"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
     >
-      <div className="checkout-container">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Order Summary */}
-        <div className="order-summary">
-          <h3>Order Summary</h3>
+        <div className="bg-white rounded-lg shadow-lg p-6 h-fit">
+          <h3 className="text-xl font-semibold text-gray-800 mb-6">Order Summary</h3>
 
-          <div className="selected-colors-checkout">
-            <h4>Your Colors</h4>
-            <div className="checkout-colors">
+          <div className="mb-6">
+            <h4 className="text-sm font-medium text-gray-600 uppercase tracking-wide mb-3">Your Colors</h4>
+            <div className="flex gap-3">
               {selectedColors.map((color, index) => (
                 <div
                   key={index}
-                  className="checkout-color"
+                  className="w-10 h-10 rounded-lg shadow-md border border-gray-200"
                   style={{ backgroundColor: color }}
                   title={color}
                 />
@@ -166,123 +170,129 @@ const Checkout = ({
             </div>
           </div>
 
-          <div className="product-list">
+          <div className="space-y-4 mb-6">
             {selectedProducts.map(product => (
-              <div key={product.id} className="checkout-product">
-                <div className="product-details">
-                  <h4>{product.name}</h4>
-                  <p>{product.category}</p>
+              <div key={product.id} className="flex justify-between items-start py-3 border-b border-gray-100">
+                <div className="flex-1">
+                  <h4 className="font-medium text-gray-900">{product.name}</h4>
+                  <p className="text-sm text-gray-500">{product.category}</p>
                 </div>
-                <div className="product-price">
+                <div className="font-semibold text-gray-900">
                   ${product.price}
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="order-total">
-            <div className="subtotal">
-              <span>Subtotal: ${getTotalPrice().toFixed(2)}</span>
+          <div className="space-y-2 pt-4 border-t">
+            <div className="flex justify-between text-gray-600">
+              <span>Subtotal:</span>
+              <span>${getTotalPrice().toFixed(2)}</span>
             </div>
-            <div className="shipping">
-              <span>Shipping: Free</span>
+            <div className="flex justify-between text-gray-600">
+              <span>Shipping:</span>
+              <span>Free</span>
             </div>
-            <div className="total">
-              <strong>Total: ${getTotalPrice().toFixed(2)}</strong>
+            <div className="flex justify-between text-xl font-bold text-gray-900 pt-2 border-t">
+              <span>Total:</span>
+              <span>${getTotalPrice().toFixed(2)}</span>
             </div>
           </div>
         </div>
 
         {/* Payment Form */}
-        <div className="payment-form">
-          <div className="form-header">
-            <Lock size={24} />
-            <h3>Secure Payment</h3>
+        <div className="bg-white rounded-lg shadow-lg p-6">
+          <div className="flex items-center gap-3 mb-6">
+            <Lock size={24} className="text-green-600" />
+            <h3 className="text-xl font-semibold text-gray-800">Secure Payment</h3>
           </div>
 
-          <form onSubmit={handleSubmit}>
-            <div className="customer-info">
-              <h4>Customer Information</h4>
-
-              <div className="form-row">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <h4 className="text-sm font-medium text-gray-600 uppercase tracking-wide mb-4">Customer Information</h4>
+              <div className="space-y-4">
                 <input
                   type="email"
                   placeholder="Email Address"
                   value={customerInfo.email}
                   onChange={(e) => handleInputChange('email', e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                 />
-              </div>
 
-              <div className="form-row">
                 <input
                   type="text"
                   placeholder="Full Name"
                   value={customerInfo.name}
                   onChange={(e) => handleInputChange('name', e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                 />
-              </div>
 
-              <div className="form-row">
                 <input
                   type="text"
                   placeholder="Address"
                   value={customerInfo.address}
                   onChange={(e) => handleInputChange('address', e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                 />
-              </div>
 
-              <div className="form-row-group">
-                <input
-                  type="text"
-                  placeholder="City"
-                  value={customerInfo.city}
-                  onChange={(e) => handleInputChange('city', e.target.value)}
-                  required
-                />
-                <input
-                  type="text"
-                  placeholder="State"
-                  value={customerInfo.state}
-                  onChange={(e) => handleInputChange('state', e.target.value)}
-                  required
-                />
-                <input
-                  type="text"
-                  placeholder="ZIP Code"
-                  value={customerInfo.zip}
-                  onChange={(e) => handleInputChange('zip', e.target.value)}
-                  required
-                />
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <input
+                    type="text"
+                    placeholder="City"
+                    value={customerInfo.city}
+                    onChange={(e) => handleInputChange('city', e.target.value)}
+                    className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required
+                  />
+                  <input
+                    type="text"
+                    placeholder="State"
+                    value={customerInfo.state}
+                    onChange={(e) => handleInputChange('state', e.target.value)}
+                    className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required
+                  />
+                  <input
+                    type="text"
+                    placeholder="ZIP Code"
+                    value={customerInfo.zip}
+                    onChange={(e) => handleInputChange('zip', e.target.value)}
+                    className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required
+                  />
+                </div>
               </div>
             </div>
 
-            <div className="payment-details">
-              <h4>Payment Details</h4>
-              <div className="card-element-container">
-                <CreditCard size={20} />
-                <CardElement
-                  options={{
-                    style: {
-                      base: {
-                        fontSize: '16px',
-                        color: '#424770',
-                        '::placeholder': {
-                          color: '#aab7c4',
+            <div>
+              <h4 className="text-sm font-medium text-gray-600 uppercase tracking-wide mb-4">Payment Details</h4>
+              <div className="flex items-center gap-3 p-4 border border-gray-300 rounded-lg bg-gray-50">
+                <CreditCard size={20} className="text-gray-500" />
+                <div className="flex-1">
+                  <CardElement
+                    options={{
+                      style: {
+                        base: {
+                          fontSize: '16px',
+                          color: '#424770',
+                          '::placeholder': {
+                            color: '#aab7c4',
+                          },
                         },
                       },
-                    },
-                  }}
-                />
+                    }}
+                  />
+                </div>
               </div>
             </div>
 
-            <div className="payment-actions">
+            <div className="flex flex-col sm:flex-row gap-4 pt-4">
               <button
                 type="button"
-                className="back-btn"
+                className="flex items-center justify-center gap-2 px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors"
                 onClick={prevStep}
               >
                 <ArrowLeft size={20} />
@@ -291,12 +301,12 @@ const Checkout = ({
 
               <button
                 type="submit"
-                className="pay-btn"
+                className="flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white rounded-lg font-medium transition-colors flex-1"
                 disabled={!stripe || isProcessing}
               >
                 {isProcessing ? (
                   <motion.div
-                    className="processing-spinner"
+                    className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
                     animate={{ rotate: 360 }}
                     transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                   />
@@ -310,8 +320,8 @@ const Checkout = ({
             </div>
           </form>
 
-          <div className="security-note">
-            <p>🔒 Your payment information is encrypted and secure</p>
+          <div className="mt-6 text-center">
+            <p className="text-sm text-gray-500">🔒 Your payment information is encrypted and secure</p>
           </div>
         </div>
       </div>

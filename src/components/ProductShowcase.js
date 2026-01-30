@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ShoppingCart, ArrowRight, ArrowLeft, Heart } from 'lucide-react';
 import axios from 'axios';
-import './ProductShowcase.css';
 
 const ProductShowcase = ({
   selectedColors,
@@ -105,33 +104,33 @@ const ProductShowcase = ({
 
   if (loading) {
     return (
-      <div className="products-loading">
+      <div className="flex flex-col items-center justify-center py-12 space-y-4">
         <motion.div
-          className="loading-spinner"
+          className="text-blue-600"
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
         >
           <ShoppingCart size={40} />
         </motion.div>
-        <p>Finding perfect products for your colors...</p>
+        <p className="text-lg text-gray-600">Finding perfect products for your colors...</p>
       </div>
     );
   }
 
   return (
     <motion.div
-      className="product-showcase"
+      className="w-full max-w-6xl mx-auto space-y-8"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
     >
       {/* Color Reference */}
-      <div className="color-reference">
-        <h3>Your Colors</h3>
-        <div className="color-strip">
+      <div className="bg-white rounded-lg shadow-lg p-6">
+        <h3 className="text-lg font-semibold text-gray-800 mb-4">Your Colors</h3>
+        <div className="flex gap-3">
           {selectedColors.map((color, index) => (
             <div
               key={index}
-              className="color-chip"
+              className="w-12 h-12 rounded-lg shadow-md border border-gray-200"
               style={{ backgroundColor: color }}
               title={color}
             />
@@ -140,56 +139,63 @@ const ProductShowcase = ({
       </div>
 
       {/* Products Grid */}
-      <div className="products-grid">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {products.map((product, index) => {
           const isSelected = selectedProducts.some(p => p.id === product.id);
 
           return (
             <motion.div
               key={product.id}
-              className={`product-card ${isSelected ? 'selected' : ''}`}
+              className={`bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer transition-all hover:shadow-xl ${
+                isSelected ? 'ring-2 ring-blue-500 shadow-blue-200' : ''
+              }`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
               whileHover={{ scale: 1.02 }}
               onClick={() => toggleProduct(product)}
             >
-              <div className="product-image">
-                <div className="placeholder-image">
-                  <div className="image-colors">
-                    {product.colors.map((color, colorIndex) => (
-                      <div
-                        key={colorIndex}
-                        className="product-color"
-                        style={{ backgroundColor: color }}
-                      />
-                    ))}
-                  </div>
+              <div className="relative h-48 bg-gray-100 flex items-center justify-center">
+                <div className="flex gap-2">
+                  {product.colors.map((color, colorIndex) => (
+                    <div
+                      key={colorIndex}
+                      className="w-12 h-12 rounded-full shadow-lg"
+                      style={{ backgroundColor: color }}
+                    />
+                  ))}
                 </div>
-                <button className="wishlist-btn">
+                <button
+                  className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:bg-red-50 hover:text-red-600 transition-colors"
+                  onClick={(e) => e.stopPropagation()}
+                >
                   <Heart size={20} />
                 </button>
                 {isSelected && (
                   <motion.div
-                    className="selected-indicator"
+                    className="absolute top-3 left-3 bg-blue-600 text-white p-2 rounded-full shadow-lg"
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                   >
-                    <ShoppingCart size={24} />
+                    <ShoppingCart size={20} />
                   </motion.div>
                 )}
               </div>
 
-              <div className="product-info">
-                <div className="product-category">{product.category}</div>
-                <h4 className="product-name">{product.name}</h4>
-                <p className="product-description">{product.description}</p>
-                <div className="product-price">${product.price}</div>
-              </div>
+              <div className="p-6">
+                <div className="text-xs text-blue-600 font-medium uppercase tracking-wide mb-2">
+                  {product.category}
+                </div>
+                <h4 className="text-lg font-semibold text-gray-800 mb-2">{product.name}</h4>
+                <p className="text-gray-600 text-sm mb-4 leading-relaxed">{product.description}</p>
+                <div className="text-2xl font-bold text-gray-900 mb-4">${product.price}</div>
 
-              <div className="product-actions">
                 <button
-                  className={`add-to-cart-btn ${isSelected ? 'remove' : 'add'}`}
+                  className={`w-full py-2 px-4 rounded-lg font-medium transition-colors ${
+                    isSelected
+                      ? 'bg-red-100 text-red-700 hover:bg-red-200'
+                      : 'bg-blue-600 text-white hover:bg-blue-700'
+                  }`}
                   onClick={(e) => {
                     e.stopPropagation();
                     toggleProduct(product);
@@ -206,37 +212,41 @@ const ProductShowcase = ({
       {/* Cart Summary */}
       {selectedProducts.length > 0 && (
         <motion.div
-          className="cart-summary"
+          className="bg-white rounded-lg shadow-lg p-6"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <div className="cart-info">
-            <h3>Cart Summary</h3>
-            <div className="cart-items">
-              {selectedProducts.map((product, index) => (
-                <div key={product.id} className="cart-item">
-                  <span>{product.name}</span>
-                  <span>${product.price}</span>
-                </div>
-              ))}
-            </div>
-            <div className="cart-total">
-              <strong>Total: ${getTotalPrice().toFixed(2)}</strong>
+          <h3 className="text-xl font-semibold text-gray-800 mb-4">Cart Summary</h3>
+          <div className="space-y-3 mb-4">
+            {selectedProducts.map((product, index) => (
+              <div key={product.id} className="flex justify-between items-center py-2 border-b border-gray-100">
+                <span className="text-gray-700">{product.name}</span>
+                <span className="font-semibold text-gray-900">${product.price}</span>
+              </div>
+            ))}
+          </div>
+          <div className="border-t pt-4">
+            <div className="flex justify-between items-center">
+              <span className="text-xl font-bold text-gray-900">Total:</span>
+              <span className="text-xl font-bold text-blue-600">${getTotalPrice().toFixed(2)}</span>
             </div>
           </div>
         </motion.div>
       )}
 
       {/* Navigation */}
-      <div className="navigation-buttons">
-        <button className="nav-btn secondary" onClick={prevStep}>
+      <div className="flex justify-between items-center pt-6">
+        <button
+          className="flex items-center gap-2 px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors"
+          onClick={prevStep}
+        >
           <ArrowLeft size={20} />
           Back to Analysis
         </button>
 
         {selectedProducts.length > 0 && (
           <motion.button
-            className="nav-btn primary"
+            className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors shadow-lg"
             onClick={nextStep}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

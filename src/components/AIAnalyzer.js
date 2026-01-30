@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Brain, Sparkles, ArrowRight, ArrowLeft, RefreshCw } from 'lucide-react';
 import axios from 'axios';
-import './AIAnalyzer.css';
 
 const AIAnalyzer = ({
   selectedColors,
@@ -136,21 +135,25 @@ const AIAnalyzer = ({
 
   return (
     <motion.div
-      className="ai-analyzer"
+      className="w-full max-w-4xl mx-auto p-6 space-y-8"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
     >
       {/* Original Colors Display */}
-      <div className="original-colors">
-        <h3>Your Original Selection</h3>
-        <div className="colors-row">
+      <div className="bg-white rounded-lg shadow-lg p-6">
+        <h3 className="text-xl font-semibold text-gray-800 mb-4">Your Original Selection</h3>
+        <div className="flex gap-4 flex-wrap">
           {selectedColors.map((color, index) => (
             <div
               key={index}
-              className="color-swatch"
+              className="relative w-20 h-20 rounded-lg shadow-md overflow-hidden group cursor-pointer transform hover:scale-105 transition-transform"
               style={{ backgroundColor: color }}
             >
-              <span>{color}</span>
+              <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all flex items-end p-2">
+                <span className="text-white text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity bg-black bg-opacity-50 px-2 py-1 rounded">
+                  {color}
+                </span>
+              </div>
             </div>
           ))}
         </div>
@@ -159,29 +162,41 @@ const AIAnalyzer = ({
       {/* AI Analysis Process */}
       {isAnalyzing && (
         <motion.div
-          className="analysis-process"
+          className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl p-8 text-center"
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
         >
-          <div className="ai-brain">
-            <Brain size={60} />
+          <div className="relative mb-6">
+            <Brain size={60} className="text-blue-600 mx-auto" />
             <motion.div
-              className="analysis-spinner"
+              className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
               animate={{ rotate: 360 }}
               transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
             >
-              <RefreshCw size={30} />
+              <RefreshCw size={30} className="text-purple-500" />
             </motion.div>
           </div>
-          <h3>AI Analyzing Your Colors...</h3>
-          <div className="analysis-steps">
-            <motion.div className="step" animate={{ opacity: [0.5, 1, 0.5] }} transition={{ duration: 1, repeat: Infinity }}>
+          <h3 className="text-2xl font-bold text-gray-800 mb-6">AI Analyzing Your Colors...</h3>
+          <div className="space-y-3">
+            <motion.div
+              className="text-sm text-gray-600 bg-white rounded-lg py-2 px-4"
+              animate={{ opacity: [0.5, 1, 0.5] }}
+              transition={{ duration: 1, repeat: Infinity }}
+            >
               Analyzing color relationships
             </motion.div>
-            <motion.div className="step" animate={{ opacity: [0.5, 1, 0.5] }} transition={{ duration: 1, repeat: Infinity, delay: 0.5 }}>
+            <motion.div
+              className="text-sm text-gray-600 bg-white rounded-lg py-2 px-4"
+              animate={{ opacity: [0.5, 1, 0.5] }}
+              transition={{ duration: 1, repeat: Infinity, delay: 0.5 }}
+            >
               Optimizing for {userPreferences.mood} mood
             </motion.div>
-            <motion.div className="step" animate={{ opacity: [0.5, 1, 0.5] }} transition={{ duration: 1, repeat: Infinity, delay: 1 }}>
+            <motion.div
+              className="text-sm text-gray-600 bg-white rounded-lg py-2 px-4"
+              animate={{ opacity: [0.5, 1, 0.5] }}
+              transition={{ duration: 1, repeat: Infinity, delay: 1 }}
+            >
               Generating recommendations
             </motion.div>
           </div>
@@ -191,72 +206,76 @@ const AIAnalyzer = ({
       {/* AI Recommendations */}
       {analysisComplete && aiRecommendations && (
         <motion.div
-          className="ai-results"
+          className="space-y-6"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <div className="results-header">
-            <Sparkles size={24} />
-            <h3>AI Enhanced Palettes</h3>
+          <div className="flex items-center gap-3 bg-white rounded-lg p-4 shadow-sm">
+            <Sparkles size={24} className="text-yellow-500" />
+            <h3 className="text-2xl font-bold text-gray-800">AI Enhanced Palettes</h3>
           </div>
 
-          <div className="palettes-grid">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {aiRecommendations.palettes.map((palette, index) => (
               <motion.div
                 key={palette.id}
-                className="palette-result"
+                className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.2 }}
                 whileHover={{ scale: 1.02 }}
               >
-                <div className="palette-header">
-                  <h4>{palette.name}</h4>
-                  <div className="score">
-                    <span className="score-value">{palette.score}</span>
-                    <span className="score-label">Score</span>
+                <div className="flex justify-between items-start mb-4">
+                  <h4 className="text-lg font-semibold text-gray-800">{palette.name}</h4>
+                  <div className="text-right">
+                    <span className="text-2xl font-bold text-green-600">{palette.score}</span>
+                    <span className="block text-xs text-gray-500">Score</span>
                   </div>
                 </div>
 
-                <div className="palette-colors">
+                <div className="flex gap-2 mb-4">
                   {palette.colors.map((color, colorIndex) => (
                     <div
                       key={colorIndex}
-                      className="result-color"
+                      className="w-8 h-8 rounded-lg shadow-sm flex-1 min-w-0 cursor-pointer hover:scale-110 transition-transform"
                       style={{ backgroundColor: color }}
                       title={color}
                     />
                   ))}
                 </div>
 
-                <p className="palette-description">{palette.description}</p>
+                <p className="text-sm text-gray-600 leading-relaxed">{palette.description}</p>
               </motion.div>
             ))}
           </div>
 
-          <div className="insights-section">
-            <h4>AI Insights</h4>
-            <div className="insights-grid">
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <h4 className="text-xl font-semibold text-gray-800 mb-4">AI Insights</h4>
+            <div className="grid gap-4 md:grid-cols-2">
               {Object.entries(aiRecommendations.insights).map(([key, value]) => (
-                <div key={key} className="insight-item">
-                  <strong>{key.replace(/([A-Z])/g, ' $1').toLowerCase()}:</strong>
-                  <span>{value}</span>
+                <div key={key} className="bg-gray-50 rounded-lg p-4">
+                  <strong className="text-sm font-medium text-gray-600 uppercase tracking-wide">
+                    {key.replace(/([A-Z])/g, ' $1').toLowerCase()}:
+                  </strong>
+                  <span className="block text-gray-800 mt-1">{value}</span>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="recommendations-list">
-            <h4>Recommendations</h4>
-            <ul>
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <h4 className="text-xl font-semibold text-gray-800 mb-4">Recommendations</h4>
+            <ul className="space-y-3">
               {aiRecommendations.recommendations.map((rec, index) => (
                 <motion.li
                   key={index}
+                  className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.1 }}
                 >
-                  {rec}
+                  <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                  <span className="text-gray-700">{rec}</span>
                 </motion.li>
               ))}
             </ul>
@@ -265,15 +284,18 @@ const AIAnalyzer = ({
       )}
 
       {/* Navigation Buttons */}
-      <div className="navigation-buttons">
-        <button className="nav-btn secondary" onClick={prevStep}>
+      <div className="flex justify-between items-center pt-6">
+        <button
+          className="flex items-center gap-2 px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors"
+          onClick={prevStep}
+        >
           <ArrowLeft size={20} />
           Back to Colors
         </button>
 
         {analysisComplete && (
           <motion.button
-            className="nav-btn primary"
+            className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors shadow-lg"
             onClick={nextStep}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
