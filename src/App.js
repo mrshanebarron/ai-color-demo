@@ -7,7 +7,6 @@ import ProductShowcase from './components/ProductShowcase';
 import Checkout from './components/Checkout';
 import Header from './components/Header';
 import Footer from './components/Footer';
-import './App.css';
 
 // Initialize Stripe (replace with your publishable key)
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || 'pk_test_...');
@@ -66,31 +65,37 @@ function App() {
 
   return (
     <Elements stripe={stripePromise}>
-      <div className="App">
+      <div className="min-h-screen bg-gray-50 flex flex-col">
         <Header
           currentStep={currentStep}
           setCurrentStep={setCurrentStep}
         />
 
-        <main className="main-content">
-          <div className="step-header">
-            <h1>{steps[currentStep].title}</h1>
-            <p>{steps[currentStep].subtitle}</p>
-          </div>
+        <main className="flex-1">
+          <div className="mx-auto max-w-2xl px-4 py-12 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+              <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+                {steps[currentStep].title}
+              </h1>
+              <p className="mt-4 text-lg text-gray-600">
+                {steps[currentStep].subtitle}
+              </p>
+            </div>
 
-          <StepComponent
-            selectedColors={selectedColors}
-            setSelectedColors={setSelectedColors}
-            aiRecommendations={aiRecommendations}
-            setAiRecommendations={setAiRecommendations}
-            selectedProducts={selectedProducts}
-            setSelectedProducts={setSelectedProducts}
-            userPreferences={userPreferences}
-            setUserPreferences={setUserPreferences}
-            nextStep={nextStep}
-            prevStep={prevStep}
-            currentStep={currentStep}
-          />
+            <StepComponent
+              selectedColors={selectedColors}
+              setSelectedColors={setSelectedColors}
+              aiRecommendations={aiRecommendations}
+              setAiRecommendations={setAiRecommendations}
+              selectedProducts={selectedProducts}
+              setSelectedProducts={setSelectedProducts}
+              userPreferences={userPreferences}
+              setUserPreferences={setUserPreferences}
+              nextStep={nextStep}
+              prevStep={prevStep}
+              currentStep={currentStep}
+            />
+          </div>
         </main>
 
         <Footer />
