@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
-import { motion, AnimatePresence } from 'framer-motion';
 import ColorSelector from './components/ColorSelector';
 import AIAnalyzer from './components/AIAnalyzer';
 import ProductShowcase from './components/ProductShowcase';
@@ -27,23 +26,23 @@ function App() {
   const steps = {
     selector: {
       component: ColorSelector,
-      title: 'Choose Your Colors',
-      subtitle: 'Select colors that inspire you'
+      title: 'Select Colors',
+      subtitle: 'Choose colors that resonate with you'
     },
     analyzer: {
       component: AIAnalyzer,
-      title: 'AI Analysis',
-      subtitle: 'Let AI enhance your color choices'
+      title: 'Color Analysis',
+      subtitle: 'Optimize your palette'
     },
     products: {
       component: ProductShowcase,
-      title: 'Perfect Products',
-      subtitle: 'Products that match your colors'
+      title: 'Matching Products',
+      subtitle: 'Products for your palette'
     },
     checkout: {
       component: Checkout,
-      title: 'Secure Checkout',
-      subtitle: 'Complete your purchase'
+      title: 'Complete Order',
+      subtitle: 'Finalize your purchase'
     }
   };
 
@@ -74,40 +73,24 @@ function App() {
         />
 
         <main className="main-content">
-          <motion.div
-            className="step-header"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            key={currentStep}
-          >
+          <div className="step-header">
             <h1>{steps[currentStep].title}</h1>
             <p>{steps[currentStep].subtitle}</p>
-          </motion.div>
+          </div>
 
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentStep}
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -50 }}
-              transition={{ duration: 0.3 }}
-              className="step-content"
-            >
-              <StepComponent
-                selectedColors={selectedColors}
-                setSelectedColors={setSelectedColors}
-                aiRecommendations={aiRecommendations}
-                setAiRecommendations={setAiRecommendations}
-                selectedProducts={selectedProducts}
-                setSelectedProducts={setSelectedProducts}
-                userPreferences={userPreferences}
-                setUserPreferences={setUserPreferences}
-                nextStep={nextStep}
-                prevStep={prevStep}
-                currentStep={currentStep}
-              />
-            </motion.div>
-          </AnimatePresence>
+          <StepComponent
+            selectedColors={selectedColors}
+            setSelectedColors={setSelectedColors}
+            aiRecommendations={aiRecommendations}
+            setAiRecommendations={setAiRecommendations}
+            selectedProducts={selectedProducts}
+            setSelectedProducts={setSelectedProducts}
+            userPreferences={userPreferences}
+            setUserPreferences={setUserPreferences}
+            nextStep={nextStep}
+            prevStep={prevStep}
+            currentStep={currentStep}
+          />
         </main>
 
         <Footer />
